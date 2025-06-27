@@ -23,7 +23,7 @@ def plot(name, input, title, fractions, del_fractions, uv_color, conductivity_co
     if mark_maxima == True:
         # Add red dot at maximum
         # Find maxima
-        peaks= find_peaks(data.iloc[:, 1], prominence=maxima_threshhold)
+        peaks= find_peaks(data.iloc[:, 1], prominence=maxima_threshhold, plateau_size=[0,10])
         for peaks in peaks[0]:
             max_x = data['Volume_ml'][peaks]
             max_y = data['mAU'][peaks]
@@ -57,7 +57,6 @@ def plot(name, input, title, fractions, del_fractions, uv_color, conductivity_co
     # Set appropriate ranges for each axis
     x_lim = data["Volume_ml"].max()
     y_lim = data["mAU"].max() + data["mAU"].max()*0.2
-    #y_limmin = -5
     y_limmin = data["mAU"].min()
     ax1.set_xlim(0, x_lim)
     ax1.set_ylim(y_limmin, y_lim)
@@ -76,7 +75,7 @@ def plot(name, input, title, fractions, del_fractions, uv_color, conductivity_co
         ax1.axvspan(vol_lower.iloc[0], vol_higher.iloc[0], color='gray', alpha=0.3)
         ax1.text(middle, ax1.get_ylim()[1]*0.7, f'F{frac}', ha='center', va='center', fontsize=6, color='black')
 
-    y_pos =y_limmin + (y_lim-y_limmin)*0.04
+    y_pos = y_limmin + (y_lim-y_limmin)*0.04
    # mark the fractions
     for vol, frac in zip(data['Fraction_vol'], data['Fraction']):
         if pd.notna(vol) and pd.notna(frac) and frac not in del_fractions:  # Skip NaN values
@@ -88,15 +87,31 @@ def plot(name, input, title, fractions, del_fractions, uv_color, conductivity_co
     # Title with experimental details
     ax1.set_title(title, fontsize=16, fontweight='bold', pad=20)
 
-    if buffer == True:
-            ax2 = ax1.twinx()  # Create a second y-axis sharing the same x-axis
-            buffer_line, = ax2.plot(data['Volume_grad'],data['Gradient_percentB'], color=buffer_color, lw=2,
+    if buffer == True and salt == False:
+        ax2 = ax1.twinx()  # Create a second y-axis sharing the same x-axis
+        buffer_line, = ax2.plot(data['Volume_grad'],data['Gradient_percentB'], color=buffer_color, lw=2,
                         linestyle='--', label='Buffer B (%)') #plot buffer line
-            ax2.set_ylabel('Buffer B (%)', fontsize=12, fontweight='bold', color=buffer_color) #label y axis
-            ax2.tick_params(axis='y', labelcolor=buffer_color)
-            ax2.set_ylim(0, 105)  # Slightly above 100% for better visibility
+        ax2.set_ylabel('Buffer B (%)', fontsize=12, fontweight='bold', color=buffer_color) #label y axis
+        ax2.tick_params(axis='y', labelcolor=buffer_color)
+        ax2.set_ylim(0, 105)  # Slightly above 100% for better visibility
 
-    if salt == True:
+    elif salt == True and buffer == False:
+        ax2 = ax1.twinx()  # Create a third y-axis
+        conductivity_line, = ax2.plot(data['Volume_ml'], data['Cond'], color=conductivity_color, lw=2,
+                                label='Conductivity (mS/cm)')
+        ax2.set_ylabel('Conductivity (mS/cm)', fontsize=12, fontweight='bold', color=conductivity_color)
+        ax2.tick_params(axis='y', labelcolor=conductivity_color)
+        y_lim_salt = data['Cond'].max() + data['Cond'].max()*0.2
+        ax2.set_ylim(0, y_lim_salt)
+
+    elif salt == True and buffer == True:
+        ax2 = ax1.twinx()  # Create a second y-axis sharing the same x-axis
+        buffer_line, = ax2.plot(data['Volume_grad'],data['Gradient_percentB'], color=buffer_color, lw=2,
+                        linestyle='--', label='Buffer B (%)') #plot buffer line
+        ax2.set_ylabel('Buffer B (%)', fontsize=12, fontweight='bold', color=buffer_color) #label y axis
+        ax2.tick_params(axis='y', labelcolor=buffer_color)
+        ax2.set_ylim(0, 105)  # Slightly above 100% for better visibility
+    
         ax3 = ax1.twinx()  # Create a third y-axis
         # Offset the third y-axis to the right
         ax3.spines['right'].set_position(('outward', 60))
@@ -106,6 +121,8 @@ def plot(name, input, title, fractions, del_fractions, uv_color, conductivity_co
         ax3.tick_params(axis='y', labelcolor=conductivity_color)
         y_lim_salt = data['Cond'].max() + data['Cond'].max()*0.2
         ax3.set_ylim(0, y_lim_salt)
+
+    
 
     if salt == True and buffer == True:
         # Create combined legend
