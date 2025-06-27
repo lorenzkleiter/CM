@@ -104,7 +104,8 @@ def plot(name, input, title, fractions, del_fractions, uv_color, conductivity_co
                                 label='Conductivity (mS/cm)')
         ax3.set_ylabel('Conductivity (mS/cm)', fontsize=12, fontweight='bold', color=conductivity_color)
         ax3.tick_params(axis='y', labelcolor=conductivity_color)
-        ax3.set_ylim(15, 17)
+        y_lim_salt = data['Cond'].max() + data['Cond'].max()*0.2
+        ax3.set_ylim(0, y_lim_salt)
 
     if salt == True and buffer == True:
         # Create combined legend
