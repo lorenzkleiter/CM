@@ -21,8 +21,10 @@ def plot(name, input_data, akta_type, **kwargs):
         Plot title
     fractions : list, default=[]
         List of fraction numbers to highlight
+    fraction_text: integer, default = 0.7
+        height of fraction test marking fractions
     del_fraction_markings : list, default=[]
-        Fractions to exclude from marking
+        Fractions to exclude from marking     
     uv_color : str, default='#1f77b4'
         Color for UV absorption line
     conductivity_color : str, default='#d68924'
@@ -54,6 +56,7 @@ def plot(name, input_data, akta_type, **kwargs):
     defaults = {
         'title': '',
         'fractions': [],
+        'fraction_text': 0.7,
         'del_fraction_markings': [],
         'uv_color': '#1f77b4',
         'conductivity_color': '#d68924',
@@ -113,7 +116,7 @@ def plot(name, input_data, akta_type, **kwargs):
         _add_maxima_markers(ax1, data, config)
 
     # Add fraction highlighting
-    _add_fraction_highlighting(ax1, data, config['fractions'], akta_type)
+    _add_fraction_highlighting(ax1, data, config, akta_type)
     
     # Add fraction markers
     _add_fraction_markers(ax1, data, config['del_fraction_markings'], akta_type, y_limmin, y_lim)
@@ -165,9 +168,9 @@ def _add_maxima_markers(ax, data, config):
                    ha='center')
 
 
-def _add_fraction_highlighting(ax, data, fractions, akta_type):
+def _add_fraction_highlighting(ax, data, config, akta_type):
     """Add transparent boxes for fraction highlighting."""
-    for frac in fractions:
+    for frac in config['fractions']:
         frac_number = str(frac)
         next_number = str(frac + 1)
         
@@ -182,7 +185,7 @@ def _add_fraction_highlighting(ax, data, fractions, akta_type):
             middle = (vol_lower.iloc[0] + vol_higher.iloc[0]) / 2
             ax.axvspan(vol_lower.iloc[0], vol_higher.iloc[0], 
                       color='gray', alpha=0.3)
-            ax.text(middle, ax.get_ylim()[1] * 0.7, f'F{frac}', 
+            ax.text(middle, ax.get_ylim()[1] * config['fraction_text'], f'F{frac}', 
                    ha='center', va='center', fontsize=6, color='black')
 
 
