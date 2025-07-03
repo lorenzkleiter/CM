@@ -72,7 +72,7 @@ def plot(name, input_data, akta_type, **kwargs):
         'figsize': (12, 7)
     }
     for key in kwargs.keys():
-       if key not in ['title', 'fractions', 'del_fraction_markings', 'uv_color','conductivity_color', 'buffer_color', 'marker_color','mark_maxima','maxima_threshold', 'maxima_type', 'max_width','salt','buffer','output_datatype','figsize']:
+       if key not in ['title', 'fractions', 'del_fraction_markings', 'uv_color','conductivity_color', 'buffer_color', 'marker_color','mark_maxima','maxima_threshold', 'maxima_type', 'max_width','salt','buffer','output_datatype','figsize', 'fraction_text']:
            print(f'Warning: you might have misspelled the variable: {key}. Which means the default parameter was used')   
     # Update defaults with provided kwargs
     config = {**defaults, **kwargs}
