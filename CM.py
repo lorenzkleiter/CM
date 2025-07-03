@@ -23,7 +23,7 @@ def plot(name, input, title, fractions, del_fractions, uv_color, conductivity_co
     if mark_maxima == True:
         # Add red dot at maximum
         # Find maxima
-        peaks= find_peaks(data.iloc[:, 1], prominence=maxima_threshhold, plateau_size=[0,10])
+        peaks= find_peaks(data.iloc[:, 1], prominence=maxima_threshhold, plateau_size=[0,10], width =[0,1000])
         for peaks in peaks[0]:
             max_x = data['Volume_ml'][peaks]
             max_y = data['mAU'][peaks]
