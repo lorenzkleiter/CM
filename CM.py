@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 
 def plot(name, input, title, fractions, del_fractions, uv_color, conductivity_color, buffer_color, marker_color,mark_maxima, maxima_type,
-        maxima_threshhold, salt, buffer, akta_type, output_datatype):
+        maxima_threshhold,max_width, salt, buffer, akta_type, output_datatype):
     data = pd.DataFrame({
     'Volume_ml': input.iloc[:, 0],
     'mAU': input.iloc[:, 1],
@@ -23,7 +23,7 @@ def plot(name, input, title, fractions, del_fractions, uv_color, conductivity_co
     if mark_maxima == True:
         # Add red dot at maximum
         # Find maxima
-        peaks= find_peaks(data.iloc[:, 1], prominence=maxima_threshhold, plateau_size=[0,10], width =[0,3000])
+        peaks= find_peaks(data.iloc[:, 1], prominence=maxima_threshhold, plateau_size=[0,10], width =[0,max_width])
         for peaks in peaks[0]:
             max_x = data['Volume_ml'][peaks]
             max_y = data['mAU'][peaks]
