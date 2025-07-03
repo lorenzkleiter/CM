@@ -56,8 +56,9 @@ def plot(name, input, title, fractions, del_fractions, uv_color, conductivity_co
 
     # Set appropriate ranges for each axis
     x_lim = data["Volume_ml"].max()
-    y_lim = data["mAU"].max() + data["mAU"].max()*0.2
-    y_limmin = data["mAU"].min()
+    y_lim = data["mAU"].max() + data["mAU"].max()*0.2 #max y value plus extra room
+    y_limmin = data["mAU"].iloc[100:].min() #min y value(skip first 100 as their are often outliers there)
+    y_limmin = y_limmin - y_lim*0.02 #extra room for the line itself
     ax1.set_xlim(0, x_lim)
     ax1.set_ylim(y_limmin, y_lim)
 
