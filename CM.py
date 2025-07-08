@@ -265,3 +265,16 @@ def _add_secondary_axes(ax1, data, config):
         additional_lines.append(conductivity_line)
     
     return additional_lines
+
+def load(name, akta_type, **kwargs):
+    defaults = {'small_akta_filetype': 'csv'}
+    config = {**defaults, **kwargs}
+
+    if akta_type == 'small':
+        if config['small_akta_filetype'] == 'csv': data = pd.read_csv(f'{name}.csv', sep=",", encoding='utf_8', skiprows=3, header=None)
+        elif config['small_akta_filetype']  == 'asc': data = pd.read_csv(f'{name}.asc', sep="\t", encoding='utf_8', skiprows=3, header=None)
+        else: print("please enter 'csv' or 'asc' for small_akta_filetype")
+    elif akta_type == 'large': data = pd.read_csv(f'{name}.csv', sep="\t", encoding='utf_16', skiprows=3, header=None)
+    else: print("please enter 'large' or 'small' for akta_type")
+
+    return data
