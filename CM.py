@@ -74,7 +74,7 @@ def plot(name, input_data, akta_type, **kwargs):
         'x_lim': data["Volume_ml"].max()
     }
     for key in kwargs.keys():
-       if key not in ['title', 'fractions', 'del_fraction_markings', 'uv_color','conductivity_color', 'buffer_color', 'marker_color','mark_maxima','maxima_threshold', 'maxima_type', 'max_width','salt','buffer','output_datatype','figsize', 'fraction_text']:
+       if key not in ['title', 'fractions', 'del_fraction_markings', 'uv_color','conductivity_color', 'buffer_color', 'marker_color','mark_maxima','maxima_threshold', 'maxima_type', 'max_width','salt','buffer','output_datatype','figsize', 'fraction_text', 'x_lim']:
            print(f'Warning: you might have misspelled the variable: {key}. Which means the default parameter was used')   
     # Update defaults with provided kwargs
     config = {**defaults, **kwargs}
@@ -109,7 +109,7 @@ def plot(name, input_data, akta_type, **kwargs):
     y_lim = data["mAU"].max() + data["mAU"].max() * 0.2
     y_limmin = data["mAU"].iloc[100:].min()
     y_limmin = y_limmin - y_lim * 0.02
-    ax1.set_xlim(0, x_lim)
+    ax1.set_xlim(0, config['x_lim'])
     ax1.set_ylim(y_limmin, y_lim)
 
         # Mark maxima if requested
