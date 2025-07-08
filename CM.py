@@ -45,11 +45,12 @@ def plot(name, input_data, akta_type, **kwargs):
         Whether to show conductivity data
     buffer : bool, default=False
         Whether to show buffer gradient
- 
     output_datatype : str, default='svg'
         Output file format
     figsize : tuple, default=(12, 7)
         Figure size (width, height)
+    x_lim: int. default= max X value
+        limit of the x axis    
     """
     
     # Set default values
@@ -69,7 +70,8 @@ def plot(name, input_data, akta_type, **kwargs):
         'salt': False,
         'buffer': False,
         'output_datatype': 'svg',
-        'figsize': (12, 7)
+        'figsize': (12, 7),
+        'x_lim': data["Volume_ml"].max()
     }
     for key in kwargs.keys():
        if key not in ['title', 'fractions', 'del_fraction_markings', 'uv_color','conductivity_color', 'buffer_color', 'marker_color','mark_maxima','maxima_threshold', 'maxima_type', 'max_width','salt','buffer','output_datatype','figsize', 'fraction_text']:
@@ -103,8 +105,7 @@ def plot(name, input_data, akta_type, **kwargs):
                    color=config['uv_color'])
     ax1.tick_params(axis='y', labelcolor=config['uv_color'])
 
-    # Set axis limits
-    x_lim = data["Volume_ml"].max()
+    # Set y axis limits
     y_lim = data["mAU"].max() + data["mAU"].max() * 0.2
     y_limmin = data["mAU"].iloc[100:].min()
     y_limmin = y_limmin - y_lim * 0.02
