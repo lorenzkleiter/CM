@@ -135,7 +135,7 @@ def plot(name, input_data, akta_type, **kwargs):
 
     # Finalize and save
     plt.tight_layout()
-    plt.savefig(f'{name}.{config["output_datatype"]}')
+    plt.savefig(f'{name}.{config["output_datatype"]}', format=config["output_datatype"])
 
 """
 Helper Functions
@@ -267,7 +267,22 @@ def _add_secondary_axes(ax1, data, config):
     return additional_lines
 
 def load(name, akta_type, **kwargs):
-    defaults = {'small_akta_filetype': 'csv'}
+    """
+    Load chromatography data.
+    
+    Parameters:
+    -----------
+    name : str
+        Input filename (without extension)
+    akta_type : str, necessary due to difference in file format
+        AKTA system type ('small' or 'large')
+
+    Keyword Arguments:
+    ------------------
+    small_akta_filetype: str, default = 'csv'
+        Type of file exported from the small akta('csv' or 'asc')
+    """
+    defaults = {'small_akta_filetype': 'csv'} 
     config = {**defaults, **kwargs}
 
     if akta_type == 'small':
