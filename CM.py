@@ -71,7 +71,7 @@ def plot(name, input_data, akta_type, **kwargs):
         'buffer': False,
         'output_datatype': 'svg',
         'figsize': (12, 7),
-        'x_lim': data["Volume_ml"].max()
+        'x_lim': None
     }
     for key in kwargs.keys():
        if key not in ['title', 'fractions', 'del_fraction_markings', 'uv_color','conductivity_color', 'buffer_color', 'marker_color','mark_maxima','maxima_threshold', 'maxima_type', 'max_width','salt','buffer','output_datatype','figsize', 'fraction_text', 'x_lim']:
@@ -105,11 +105,12 @@ def plot(name, input_data, akta_type, **kwargs):
                    color=config['uv_color'])
     ax1.tick_params(axis='y', labelcolor=config['uv_color'])
 
-    # Set y axis limits
+    # Set axis limits
+    x_lim = config['x_lim'] if config['x_lim'] is not None else data["Volume_ml"].max()
     y_lim = data["mAU"].max() + data["mAU"].max() * 0.2
     y_limmin = data["mAU"].iloc[100:].min()
     y_limmin = y_limmin - y_lim * 0.02
-    ax1.set_xlim(0, config['x_lim'])
+    ax1.set_xlim(0, x_lim)
     ax1.set_ylim(y_limmin, y_lim)
 
         # Mark maxima if requested
@@ -120,7 +121,7 @@ def plot(name, input_data, akta_type, **kwargs):
     _add_fraction_highlighting(ax1, data, config, akta_type)
     
     # Add fraction markers
-    _add_fraction_markers(ax1, data, config['del_fraction_markings'], akta_type, y_limmin, y_lim)
+    _add_fraction_markers(ax1, data, config, akta_type, y_limmin, y_lim, x_lim)
 
     # Set title
     ax1.set_title(config['title'], fontsize=16, fontweight='bold', pad=20)
@@ -190,18 +191,18 @@ def _add_fraction_highlighting(ax, data, config, akta_type):
                    ha='center', va='center', fontsize=6, color='black')
 
 
-def _add_fraction_markers(ax, data, del_fraction_markings, akta_type, y_limmin, y_lim):
+def _add_fraction_markers(ax, data, config, akta_type, y_limmin, y_lim, x_lim):
     """Add vertical lines and labels for fraction markers."""
     y_pos = y_limmin + (y_lim - y_limmin) * 0.04
 
     del_fractions = []                              #converts desired fraction do string for filtering
-    for frac in del_fraction_markings:
+    for frac in config['del_fraction_markings']:
         string = str(frac)
         if akta_type == 'small':    del_fractions.append(f'T{string}')
         elif akta_type == 'large':    del_fractions.append(f'{string}')
 
     for vol, frac in zip(data['Fraction_vol'], data['Fraction']):
-        if pd.notna(vol) and pd.notna(frac) and frac not in del_fractions and frac not in ['Waste', 'Frac']:
+        if pd.notna(vol) and pd.notna(frac) and frac not in del_fractions and frac not in ['Waste', 'Frac'] and vol < x_lim:
             ax.axvline(x=vol, color='gray', linestyle=':', alpha=0.5, 
                       ymin=0, ymax=0.04)
             ax.text(vol, y_pos, str(frac).strip('""'),
